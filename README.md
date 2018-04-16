@@ -3,6 +3,7 @@ FXServer ESX Identity
 
 NOTICE:
 `This project is discontinued for now.`
+The ESX Discord/Github members have full permission to contribute/use it as they please.
 
 [REQUIREMENTS]
 
