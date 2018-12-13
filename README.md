@@ -1,44 +1,55 @@
-# fxserver-esx_identity
-FXServer ESX Identity
+# esx_identity
 
-NOTICE:
-`This project is discontinued for now.`
-The ESX Discord/Github members have full permission to contribute/use it as they please.
-
-[REQUIREMENTS]
-
+## Requirements
 * Dependencies For Full Functionality
-  * esx_policejob => https://github.com/ESX-Org/esx_policejob
-  * esx_society => https://github.com/ESX-Org/esx_society
+  * [esx_skin](https://github.com/ESX-Org/esx_skin)
+  * [esx_policejob](https://github.com/ESX-Org/esx_policejob)
+  * [esx_society](https://github.com/ESX-Org/esx_society)
 
-[INSTALLATION]
+## Download & Installation
 
-1) Install To resources/[esx]/esx_identity << NOT esx_identity_es5
-`<< MUST BE INSTALLED HERE`
-2) Import esx_identity.sql in your database
+### Using [fvm](https://github.com/qlaffont/fvm-installer)
+```
+fvm install --save --folder=esx esx-org/esx_identity
+```
 
-3) Add this in your server.cfg :
+### Using Git
+```
+cd resources
+git clone https://github.com/ESX-Org/esx_identity [esx]/esx_identity
+```
 
-Notice:
-`If you were already using the latest version of esx_identity before the update, you can just import esx_identity_update.sql`
+### Manually
+- Download https://github.com/ESX-Org/esx_identity/archive/master.zip
+- Put it in the `[esx]` directory
+
+## Installation
+- Import `esx_identity.sql` in your database
+- Add this to your `server.cfg`:
 
 ```
 start esx_identity
 ```
-4) If you are using esx_policejob or esx_society, you need to enable the following in the files config.lua:
-```Config.EnableESXIdentity = true```
 
+- If you are using esx_policejob or esx_society, you need to enable the following in the scripts' `config.lua`:
+```Config.EnableESXIdentity          = true```
+
+### Commands
 ```
-Commands:
-
-/id
 /register
 /charlist
-/charselect 1,2,3
-/delchar 1,2,3
-/getID (ONLY FOR DEVS. If you restart the esx_identity resource while in-game please use this command.)
+/charselect
+/chardel
 ```
 
-Credits:
-`Script Created By: ArkSeyonet @Ark`
+# Legal
+### License
+esx_identity - rp characters
 
+Copyright (C) 2015-2018 Jérémie N'gadi
+
+This program Is free software: you can redistribute it And/Or modify it under the terms Of the GNU General Public License As published by the Free Software Foundation, either version 3 Of the License, Or (at your option) any later version.
+
+This program Is distributed In the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty Of MERCHANTABILITY Or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License For more details.
+
+You should have received a copy Of the GNU General Public License along with this program. If Not, see http://www.gnu.org/licenses/.
