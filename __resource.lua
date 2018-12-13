@@ -26,3 +26,7 @@ files {
 }
 
 dependency 'es_extended'
+
+exports {
+  'openRegistry'
+}

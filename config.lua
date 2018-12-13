@@ -1,0 +1,1 @@
+MultipleCharacterSupport = false
