@@ -22,8 +22,7 @@ start esx_identity
 ### Commands
 ```
 /register
-/charlist
-/charselect
+/char
 /chardel
 ```
 
