@@ -11,7 +11,7 @@
 ## Installation
 - Import `esx_identity.sql` in your database
 - Add this to your `server.cfg`:
-
+- Note: the sql now only uses the users table
 ```
 start esx_identity
 ```
