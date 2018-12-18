@@ -27,6 +27,7 @@ start esx_identity
 ```
 
 ## Notes
+This script is REQUIRED for the new ESX AIOMenu.
 
 ## Licensing
 
