@@ -32,6 +32,11 @@ start esx_identity
 
 * If you have any sources for esx_aiomenu that date before this update was released, then you may use them following the licenses of the old script. For help with ESX AIOMenu or the new version of ESX Identity, please join the discord via this link: https://discord.gg/3ECcWxn
 
+## Credits
+
+* Special thanks to Cosharek For Help In The Creation Of The UI Design.
+* Special thanks to Alphakush and CMD.Telhada for help with initial testing.
+
 ## Licensing
 
 Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International Public License
