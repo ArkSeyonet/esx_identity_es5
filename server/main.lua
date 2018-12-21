@@ -7,6 +7,23 @@ Citizen.CreateThread(function()
 	end
 end)
 
+AddEventHandler('es:playerLoaded', function(source)
+	local myID = {
+		steamid = GetPlayerIdentifiers(source)[1],
+		playerid = source
+	}
+
+	TriggerClientEvent('esx_identity:saveID', source, myID)
+	getIdentity(source, function(data)
+		if data.firstname == '' then
+			TriggerClientEvent('esx_identity:identityCheck', source, false)
+			TriggerClientEvent('esx_identity:showRegisterIdentity', source)
+		else
+			TriggerClientEvent('esx_identity:identityCheck', source, true)
+		end
+	end)
+end)
+
 function getIdentity(source, callback)
 	local identifier = GetPlayerIdentifiers(source)[1]
 
@@ -94,50 +111,6 @@ AddEventHandler('esx_identity:setIdentity', function(data, myIdentifiers)
 			TriggerClientEvent('esx_identity:failedSetIdentity', data)
 		end
 	end)
-end)
-
-AddEventHandler('es:playerLoaded', function(source)
-	local myID = {
-		steamid = GetPlayerIdentifiers(source)[1],
-		playerid = source
-	}
-
-	TriggerClientEvent('esx_identity:saveID', source, myID)
-	getIdentity(source, function(data)
-		if data.firstname == '' then
-			TriggerClientEvent('esx_identity:identityCheck', source, false)
-			TriggerClientEvent('esx_identity:showRegisterIdentity', source)
-		else
-			TriggerClientEvent('esx_identity:identityCheck', source, true)
-		end
-	end)
-end)
-
-AddEventHandler('onResourceStart', function(resource)
-	if resource == GetCurrentResourceName() then
-		Citizen.Wait(3000)
-
-		local xPlayers, xPlayer = ESX.GetPlayers()
-		for i=1, #xPlayers, 1 do
-			xPlayer = ESX.GetPlayerFromId(xPlayers[i])
-
-			local myID = {
-				steamid  = xPlayer.identifier,
-				playerid = xPlayer.source
-			}
-
-			TriggerClientEvent('esx_identity:saveID', xPlayer.source, myID)
-
-			getIdentity(xPlayer.source, function(data)
-				if data.firstname == '' then
-					TriggerClientEvent('esx_identity:identityCheck', xPlayer.source, false)
-					TriggerClientEvent('esx_identity:showRegisterIdentity', xPlayer.source)
-				else
-					TriggerClientEvent('esx_identity:identityCheck', xPlayer.source, true)
-				end
-			end)
-		end
-	end
 end)
 
 TriggerEvent('es:addCommand', 'register', function(source, args, user)
