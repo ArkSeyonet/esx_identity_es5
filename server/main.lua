@@ -179,11 +179,11 @@ if Config.versionChecker then
 				print("---------------------------------------------------")
 				print("Current : " .. _VERSION)
 				print("Latest  : " .. rText .. "\n")
-			else
-				print("ESX Identity is up to date.")
 			end
 		else
 			print("\n---------------------------------------------------")
 			print("Unable to find the version.")
 			print("---------------------------------------------------\n")
 		end
+	end)
+end
