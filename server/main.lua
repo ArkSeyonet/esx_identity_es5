@@ -169,3 +169,21 @@ TriggerEvent('es:addGroupCommand', 'chardel', 'user', function(source, args, use
 end, function(source, args, user)
 	TriggerClientEvent('chat:addMessage', source, { args = { '^1SYSTEM', 'Insufficient permissions!' } })
 end, {help = "Delete Your Character"})
+
+if Config.versionChecker then
+    PerformHttpRequest("https://raw.githubusercontent.com/ArkSeyonet/esx_identity/master/VERSION", function(err, rText, headers)
+		if rText then
+			if tonumber(rText) > tonumber(_VERSION) then
+				print("\n---------------------------------------------------")
+				print("ESX Identity has an update available!")
+				print("---------------------------------------------------")
+				print("Current : " .. _VERSION)
+				print("Latest  : " .. rText .. "\n")
+			else
+				print("ESX Identity is up to date.")
+			end
+		else
+			print("\n---------------------------------------------------")
+			print("Unable to find the version.")
+			print("---------------------------------------------------\n")
+		end
