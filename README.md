@@ -30,7 +30,7 @@ start esx_identity
 
 * This script is REQUIRED for the new ESX AIOMenu.
 
-* If you have any sources for esx_aiomenu that date before this update was released, then you may use them following the licenses of the old script. For help with ESX AIOMenu or the new version of ESX Identity, please join the discord via this link: https://discord.gg/3ECcWxn
+* If you have any sources for esx_aiomenu that date before this update was released, then you may use them following the licenses of the old script. For help with ESX AIOMenu or the new version of ESX Identity, please join the discord via this link: https://discord.gg/vF5am5V
 
 ## Credits
 
