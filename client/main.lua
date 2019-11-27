@@ -5,8 +5,8 @@ isPlayerLockedOut = false
 hudDisabled = false
 stopThread = false
 
-local cloudOpacity = 0.01
-local muteSound = true
+local cloudOp = 0.02
+local mute = true
 
 Citizen.CreateThread(function()
     Citizen.Wait(0)
@@ -18,8 +18,8 @@ Citizen.CreateThread(function()
 
     if LockOutPlayer == false then
         DisablePlayer()
-        InitialSetup()
-        ClearScreen()
+        LockOutSetup()
+        ClearScr()
         LockOutPlayer = true
         hudDisabled = true
     end
@@ -30,7 +30,7 @@ Citizen.CreateThread(function()
     
     while GetPlayerSwitchState() ~= 5 do
         Citizen.Wait(0)
-        ClearScreen()
+        ClearScr()
     end
     
     if isRegistered == true and stopThread == false then
@@ -46,7 +46,7 @@ AddEventHandler('esx_identity:ShowFirstNameRegistration', function()
 
     while GetPlayerSwitchState() ~= 5 do
         Citizen.Wait(0)
-        ClearScreen()
+        ClearScr()
     end
 
     ShowFirstNameRegistration()
@@ -58,7 +58,7 @@ AddEventHandler('esx_identity:ShowLastNameRegistration', function()
 
     while GetPlayerSwitchState() ~= 5 do
         Citizen.Wait(0)
-        ClearScreen()
+        ClearScr()
     end
 
     ShowLastNameRegistration()
@@ -70,7 +70,7 @@ AddEventHandler('esx_identity:ShowDOBRegistration', function()
 
     while GetPlayerSwitchState() ~= 5 do
         Citizen.Wait(0)
-        ClearScreen()
+        ClearScr()
     end
 
     ShowDOBRegistration()
@@ -82,7 +82,7 @@ AddEventHandler('esx_identity:ShowSexRegistration', function()
 
     while GetPlayerSwitchState() ~= 5 do
         Citizen.Wait(0)
-        ClearScreen()
+        ClearScr()
     end
 
     ShowSexRegistration()
@@ -94,7 +94,7 @@ AddEventHandler('esx_identity:ShowHeightRegistration', function()
     
     while GetPlayerSwitchState() ~= 5 do
         Citizen.Wait(0)
-        ClearScreen()
+        ClearScr()
     end
 
     ShowHeightRegistration()
@@ -239,21 +239,17 @@ function RestorePlayer()
     FreezeEntityPosition(plyPed, false)
 end
 
-function InitialSetup()
+function LockOutSetup()
     -- Disable sound (if configured)
-    ToggleSound(muteSound)
+    ToggleSound(mute)
     -- Switch out the player if it isn't already in a switch state.
     if not IsPlayerSwitchInProgress() then
         SwitchOutPlayer(PlayerPedId(), 0, 1)
     end
 end
 
-function ClearScreen()
-    SetCloudHatOpacity(cloudOpacity)
-    HideHudAndRadarThisFrame()
-    
-    -- nice hack to 'hide' HUD elements from other resources/scripts. kinda buggy though.
-    SetDrawOrigin(0.0, 0.0, 0.0, 0)
+function ClearScr()
+    SetCloudHatOpacity(cloudOp)
 end
 
 function ToggleSound(state)
@@ -265,7 +261,7 @@ function ToggleSound(state)
 end
 
 function TriggerLoadIn()
-    ClearScreen()
+    ClearScr()
     Citizen.Wait(0)
    
     local timer = GetGameTimer()
@@ -274,18 +270,16 @@ function TriggerLoadIn()
     TriggerEvent('esx_skin:playerRegistered') 
 
     while true do
-        ClearScreen()
+        ClearScr()
         Citizen.Wait(0)
         
-        if GetGameTimer() - timer > 5000 then
-            
-            SwitchInPlayer(PlayerPedId())
-            
-            ClearScreen()
+        if GetGameTimer() - timer > 5000 then  
+            SwitchInPlayer(PlayerPedId())   
+            ClearScr()
             
             while GetPlayerSwitchState() ~= 12 do
                 Citizen.Wait(0)
-                ClearScreen()
+                ClearScr()
             end
 
             break
