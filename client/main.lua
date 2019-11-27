@@ -1,205 +1,298 @@
-local guiEnabled = false
-local myIdentity = {}
-local myIdentifiers = {}
-local hasIdentity = false
-local isDead = false
-
 ESX = nil
+isRegistered = nil
+LockOutPlayer = false
+isPlayerLockedOut = false
+hudDisabled = false
+stopThread = false
+
+local cloudOpacity = 0.01
+local muteSound = true
 
 Citizen.CreateThread(function()
-	while ESX == nil do
-		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-		Citizen.Wait(0)
-	end
+    Citizen.Wait(0)
+    
+    while ESX == nil do
+        TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+        Citizen.Wait(0)
+    end
+
+    if LockOutPlayer == false then
+        DisablePlayer()
+        InitialSetup()
+        ClearScreen()
+        LockOutPlayer = true
+        hudDisabled = true
+    end
+
+    if hudDisabled == true then
+        HideHud()
+    end
+    
+    while GetPlayerSwitchState() ~= 5 do
+        Citizen.Wait(0)
+        ClearScreen()
+    end
+    
+    if isRegistered == true and stopThread == false then
+        TriggerLoadIn()
+        stopThread = true
+        hudDisabled = false
+    end
 end)
 
-AddEventHandler('esx:onPlayerDeath', function(data)
-	isDead = true
+RegisterNetEvent('esx_identity:ShowFirstNameRegistration')
+AddEventHandler('esx_identity:ShowFirstNameRegistration', function()
+    isRegistered = false
+
+    while GetPlayerSwitchState() ~= 5 do
+        Citizen.Wait(0)
+        ClearScreen()
+    end
+
+    ShowFirstNameRegistration()
 end)
 
-AddEventHandler('playerSpawned', function(spawn)
-	isDead = false
+RegisterNetEvent('esx_identity:ShowLastNameRegistration')
+AddEventHandler('esx_identity:ShowLastNameRegistration', function()
+    isRegistered = false
+
+    while GetPlayerSwitchState() ~= 5 do
+        Citizen.Wait(0)
+        ClearScreen()
+    end
+
+    ShowLastNameRegistration()
 end)
 
-function EnableGui(state)
-	SetNuiFocus(state, state)
-	guiEnabled = state
+RegisterNetEvent('esx_identity:ShowDOBRegistration')
+AddEventHandler('esx_identity:ShowDOBRegistration', function()
+    isRegistered = false
 
-	SendNUIMessage({
-		type = "enableui",
-		enable = state
-	})
+    while GetPlayerSwitchState() ~= 5 do
+        Citizen.Wait(0)
+        ClearScreen()
+    end
+
+    ShowDOBRegistration()
+end)
+
+RegisterNetEvent('esx_identity:ShowSexRegistration')
+AddEventHandler('esx_identity:ShowSexRegistration', function()
+    isRegistered = false
+
+    while GetPlayerSwitchState() ~= 5 do
+        Citizen.Wait(0)
+        ClearScreen()
+    end
+
+    ShowSexRegistration()
+end)
+
+RegisterNetEvent('esx_identity:ShowHeightRegistration')
+AddEventHandler('esx_identity:ShowHeightRegistration', function()
+    isRegistered = false
+    
+    while GetPlayerSwitchState() ~= 5 do
+        Citizen.Wait(0)
+        ClearScreen()
+    end
+
+    ShowHeightRegistration()
+end)
+
+RegisterNetEvent('esx_identity:RegistrationSuccessful')
+AddEventHandler('esx_identity:RegistrationSuccessful', function()
+    isRegistered = true
+end)
+
+function ShowFirstNameRegistration()
+    ESX.UI.Menu.CloseAll()
+
+    ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'name_registration', {
+        title = _U('field_first_name')
+    }, function(data, menu)
+        local firstName = tostring(data.value)
+        if firstName == nil then
+            ESX.ShowNotification(_U('first_name_invalid'))
+        else
+            menu.close()
+            TriggerServerEvent('esx_identity:SetFirstName', GetPlayerServerId(PlayerId()), firstName)
+            TriggerEvent('esx_identity:ShowLastNameRegistration')
+        end
+    end, function(data, menu)
+        menu.close()
+    end)
 end
 
-RegisterNetEvent('esx_identity:showRegisterIdentity')
-AddEventHandler('esx_identity:showRegisterIdentity', function()
-	if not isDead then
-		EnableGui(true)
-	end
-end)
+function ShowLastNameRegistration()
+    ESX.UI.Menu.CloseAll()
 
-RegisterNetEvent('esx_identity:identityCheck')
-AddEventHandler('esx_identity:identityCheck', function(identityCheck)
-	hasIdentity = identityCheck
-end)
-
-RegisterNetEvent('esx_identity:saveID')
-AddEventHandler('esx_identity:saveID', function(data)
-	myIdentifiers = data
-end)
-
-RegisterNetEvent('esx_identity:noIdentity')
-AddEventHandler('esx_identity:noIdentity', function()
-	ESX.ShowNotification('You do not have an identity.')
-end)
-
-RegisterNetEvent('esx_identity:showIdentity')
-AddEventHandler('esx_identity:showIdentity', function(data)
-	ESX.ShowNotification('Character: ' .. data.firstname .. ' ' .. data.lastname)
-end)
-
-RegisterNetEvent('esx_identity:successfulDeleteIdentity')
-AddEventHandler('esx_identity:successfulDeleteIdentity', function(data)
-	ESX.ShowNotification('Successfully deleted ' .. data.firstname .. ' ' .. data.lastname .. '.')
-end)
-
-RegisterNetEvent('esx_identity:failedDeleteIdentity')
-AddEventHandler('esx_identity:failedDeleteIdentity', function(data)
-	ESX.ShowNotification('Failed to delete ' .. data.firstname .. ' ' .. data.lastname .. '. Please contact a server admin.')
-end)
-
-RegisterNetEvent('esx_identity:successfulSetIdentity')
-AddEventHandler('esx_identity:successfulSetIdentity', function(data)
-	ESX.ShowNotification('Successfully created ' .. data.firstname .. ' ' .. data.lastname .. '.')
-end)
-
-RegisterNetEvent('esx_identity:failedSetIdentity')
-AddEventHandler('esx_identity:failedSetIdentity', function(data)
-	ESX.ShowNotification('Failed to create ' .. data.firstname .. ' ' .. data.lastname .. '. Please contact a server admin.')
-end)
-
-RegisterNetEvent('esx_identity:registrationBlocked')
-AddEventHandler('esx_identity:registrationBlocked', function(data)
-	ESX.ShowNotification('You already have a character. Delete your character to make a new one.')
-end)
-
-RegisterNUICallback('escape', function(data, cb)
-	if hasIdentity then
-		EnableGui(false)
-	else
-		ESX.ShowNotification('Please make a character in order to play on this server.')
-	end
-end)
-
-RegisterNUICallback('register', function(data, cb)
-	local reason = ""
-	myIdentity = data
-	for theData, value in pairs(myIdentity) do
-		if theData == "firstname" or theData == "lastname" then
-			reason = verifyName(value)
-			
-			if reason ~= "" then
-				break
-			end
-		elseif theData == "dateofbirth" then
-			if value == "invalid" then
-				reason = "Invalid date of birth."
-				break
-			end
-		elseif theData == "height" then
-			local height = tonumber(value)
-			if height then
-				if height > 200 or height < 140 then
-					reason = "Please enter a height between 140 and 200."
-					break
-				end
-			else
-				reason = "Please enter a height between 140 and 200."
-				break
-			end
-		end
-	end
-	
-	if reason == "" then
-		TriggerServerEvent('esx_identity:setIdentity', data, myIdentifiers)
-		EnableGui(false)
-		Citizen.Wait(500)
-	else
-		ESX.ShowNotification(reason)
-	end
-end)
-
-Citizen.CreateThread(function()
-	while true do
-		if guiEnabled then
-			DisableControlAction(0, 1,   true) -- LookLeftRight
-			DisableControlAction(0, 2,   true) -- LookUpDown
-			DisableControlAction(0, 106, true) -- VehicleMouseControlOverride
-			DisableControlAction(0, 142, true) -- MeleeAttackAlternate
-			DisableControlAction(0, 30,  true) -- MoveLeftRight
-			DisableControlAction(0, 31,  true) -- MoveUpDown
-			DisableControlAction(0, 21,  true) -- disable sprint
-			DisableControlAction(0, 24,  true) -- disable attack
-			DisableControlAction(0, 25,  true) -- disable aim
-			DisableControlAction(0, 47,  true) -- disable weapon
-			DisableControlAction(0, 58,  true) -- disable weapon
-			DisableControlAction(0, 263, true) -- disable melee
-			DisableControlAction(0, 264, true) -- disable melee
-			DisableControlAction(0, 257, true) -- disable melee
-			DisableControlAction(0, 140, true) -- disable melee
-			DisableControlAction(0, 141, true) -- disable melee
-			DisableControlAction(0, 143, true) -- disable melee
-			DisableControlAction(0, 75,  true) -- disable exit vehicle
-			DisableControlAction(27, 75, true) -- disable exit vehicle
-		end
-		Citizen.Wait(10)
-	end
-end)
-
-function verifyName(name)
-	-- Don't allow short user names
-	local nameLength = string.len(name)
-	if nameLength > 25 or nameLength < 2 then
-		return 'Your player name is either too short or too long.'
-	end
-	
-	-- Don't allow special characters (doesn't always work)
-	local count = 0
-	for i in name:gmatch('[abcdefghijklmnopqrstuvwxyzåäöABCDEFGHIJKLMNOPQRSTUVWXYZÅÄÖ0123456789 -]') do
-		count = count + 1
-	end
-	if count ~= nameLength then
-		return 'Your player name contains special characters that are not allowed on this server.'
-	end
-	
-	-- Does the player carry a first and last name?
-	-- 
-	-- Example:
-	-- Allowed:     'Bob Joe'
-	-- Not allowed: 'Bob'
-	-- Not allowed: 'Bob joe'
-	local spacesInName    = 0
-	local spacesWithUpper = 0
-	for word in string.gmatch(name, '%S+') do
-
-		if string.match(word, '%u') then
-			spacesWithUpper = spacesWithUpper + 1
-		end
-
-		spacesInName = spacesInName + 1
-	end
-
-	if spacesInName > 2 then
-		return 'Your name contains more than two spaces.'
-	end
-	
-	if spacesWithUpper ~= spacesInName then
-		return 'Your name must start with a capital letter.'
-	end
-
-	return ''
+    ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'name_registration', {
+        title = _U('field_last_name')
+    }, function(data, menu)
+        local lastName = tostring(data.value)
+        if lastName == nil then
+            ESX.ShowNotification(_U('last_name_invalid'))
+        else
+            menu.close()
+            TriggerServerEvent('esx_identity:SetLastName', GetPlayerServerId(PlayerId()), lastName)
+            TriggerEvent('esx_identity:ShowDOBRegistration')
+        end
+    end, function(data, menu)
+        menu.close()
+    end)
 end
 
-function openRegistry()
-  TriggerEvent('esx_identity:showRegisterIdentity')
+function ShowDOBRegistration()
+    ESX.UI.Menu.CloseAll()
+
+    ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'dob_registration', {
+        title = _U('field_dob')
+    }, function(data, menu)
+        local dob = tostring(data.value)
+        if dob == nil then
+            ESX.ShowNotification(_U('dob_invalid'))
+        else
+            menu.close()
+            TriggerServerEvent('esx_identity:SetDOB', GetPlayerServerId(PlayerId()), dob)
+            TriggerEvent('esx_identity:ShowSexRegistration')
+        end
+    end, function(data, menu)
+        menu.close()
+    end)
+end
+
+function ShowSexRegistration()
+    ESX.UI.Menu.CloseAll()
+
+    ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'sex_registration', {
+        title = _U('field_sex')
+    }, function(data, menu)
+        local sexValue = tostring(data.value)
+
+        if sex == 'm' or sex == 'M' or sex == 'Male' or sex == 'male' then
+            sexValue = 'm'
+        else
+            sexValue = 'f'
+        end
+
+        if sexValue == nil then
+            ESX.ShowNotification(_U('sex_invalid'))
+        else
+            menu.close()
+            TriggerServerEvent('esx_identity:SetSex', GetPlayerServerId(PlayerId()), sexValue)
+            TriggerEvent('esx_identity:ShowHeightRegistration')
+        end
+    end, function(data, menu)
+        menu.close()
+    end)
+end
+
+function ShowHeightRegistration()
+    ESX.UI.Menu.CloseAll()
+
+    ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'height_registration', {
+        title = _U('field_height')
+    }, function(data, menu)
+        local height = tostring(data.value)
+        if height == nil then
+            ESX.ShowNotification(_U('height_invalid'))
+        else
+            menu.close()
+            TriggerLoadIn()
+            isRegistered = true
+            stopThread = true
+            hudDisabled = false
+            TriggerServerEvent('esx_identity:SetHeight', GetPlayerServerId(PlayerId()), height)
+
+        end
+    end, function(data, menu)
+        menu.close()
+    end)
+end
+
+function HideHud()
+    DisplayRadar(false)
+    ESX.UI.HUD.SetDisplay(0.0)
+    TriggerEvent('es:setMoneyDisplay', 0.0)
+    TriggerEvent('esx_status:setDisplay', 0.0)
+    TriggerEvent('chat:hideChat')
+end
+
+function RestoreHud()
+    DisplayRadar(true)
+	ESX.UI.HUD.SetDisplay(1.0)
+	TriggerEvent('es:setMoneyDisplay', 1.0)
+	TriggerEvent('esx_status:setDisplay', 1.0)
+    TriggerEvent('esx_voice:IsLoaded')
+    TriggerEvent('chat:showChat')
+end
+
+function DisablePlayer()
+    DisableAllControlActions(0)
+    local plyPed = GetPlayerPed(-1)
+    FreezeEntityPosition(plyPed, true)
+end
+
+function RestorePlayer()
+    local plyPed = GetPlayerPed(-1)
+    FreezeEntityPosition(plyPed, false)
+end
+
+function InitialSetup()
+    -- Disable sound (if configured)
+    ToggleSound(muteSound)
+    -- Switch out the player if it isn't already in a switch state.
+    if not IsPlayerSwitchInProgress() then
+        SwitchOutPlayer(PlayerPedId(), 0, 1)
+    end
+end
+
+function ClearScreen()
+    SetCloudHatOpacity(cloudOpacity)
+    HideHudAndRadarThisFrame()
+    
+    -- nice hack to 'hide' HUD elements from other resources/scripts. kinda buggy though.
+    SetDrawOrigin(0.0, 0.0, 0.0, 0)
+end
+
+function ToggleSound(state)
+    if state then
+        StartAudioScene("MP_LEADERBOARD_SCENE");        
+    else
+        StopAudioScene("MP_LEADERBOARD_SCENE");
+    end
+end
+
+function TriggerLoadIn()
+    ClearScreen()
+    Citizen.Wait(0)
+   
+    local timer = GetGameTimer()
+    
+    ToggleSound(false)
+    TriggerEvent('esx_skin:playerRegistered') 
+
+    while true do
+        ClearScreen()
+        Citizen.Wait(0)
+        
+        if GetGameTimer() - timer > 5000 then
+            
+            SwitchInPlayer(PlayerPedId())
+            
+            ClearScreen()
+            
+            while GetPlayerSwitchState() ~= 12 do
+                Citizen.Wait(0)
+                ClearScreen()
+            end
+
+            break
+        end
+    end 
+    
+    ClearDrawOrigin()
+    RestorePlayer()
+    RestoreHud()  
 end

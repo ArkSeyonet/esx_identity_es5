@@ -7,48 +7,30 @@ Citizen.CreateThread(function()
 	end
 end)
 
-AddEventHandler('es:playerLoaded', function(source)
-	local myID = {
-		steamid = GetPlayerIdentifiers(source)[1],
-		playerid = source
-	}
-
-	TriggerClientEvent('esx_identity:saveID', source, myID)
-	getIdentity(source, function(data)
-		if data.firstname == '' then
-			TriggerClientEvent('esx_identity:identityCheck', source, false)
-			TriggerClientEvent('esx_identity:showRegisterIdentity', source)
-		else
-			TriggerClientEvent('esx_identity:identityCheck', source, true)
-		end
-	end)
-end)
-
-function getIdentity(source, callback)
+function GetIdentity(source, callback)
 	local identifier = GetPlayerIdentifiers(source)[1]
 
-	MySQL.Async.fetchAll('SELECT identifier, firstname, lastname, dateofbirth, sex, height FROM `users` WHERE `identifier` = @identifier', {
+	MySQL.Async.fetchAll('SELECT * FROM `users` WHERE `identifier` = @identifier', {
 		['@identifier'] = identifier
 	}, function(result)
 		if result[1].firstname ~= nil then
 			local data = {
-				identifier	= result[1].identifier,
 				firstname	= result[1].firstname,
-				lastname	= result[1].lastname,
-				dateofbirth	= result[1].dateofbirth,
-				sex			= result[1].sex,
-				height		= result[1].height
+                lastname	= result[1].lastname,
+                dateofbirth = result[1].dateofbirth,
+                sex         = result[1].sex,
+                height      = result[1].height
+
 			}
 
 			callback(data)
 		else
 			local data = {
-				identifier	= '',
 				firstname	= '',
-				lastname	= '',
-				dateofbirth	= '',
-				sex			= '',
-				height		= ''
+                lastname	= '',
+                dateofbirth = '',
+                sex         = '',
+                height      = ''
 			}
 
 			callback(data)
@@ -56,134 +38,92 @@ function getIdentity(source, callback)
 	end)
 end
 
-function setIdentity(identifier, data, callback)
-	MySQL.Async.execute('UPDATE `users` SET `firstname` = @firstname, `lastname` = @lastname, `dateofbirth` = @dateofbirth, `sex` = @sex, `height` = @height WHERE identifier = @identifier', {
+function SetFirstName(identifier, firstName)
+	MySQL.Async.execute('UPDATE `users` SET `firstname` = @firstname WHERE identifier = @identifier', {
 		['@identifier']		= identifier,
-		['@firstname']		= data.firstname,
-		['@lastname']		= data.lastname,
-		['@dateofbirth']	= data.dateofbirth,
-		['@sex']			= data.sex,
-		['@height']			= data.height
-	}, function(rowsChanged)
-		if callback then
-			callback(true)
-		end
-	end)
+		['@firstname']		= firstName
+	})
 end
 
-function updateIdentity(identifier, data, callback)
-	MySQL.Async.execute('UPDATE `users` SET `firstname` = @firstname, `lastname` = @lastname, `dateofbirth` = @dateofbirth, `sex` = @sex, `height` = @height WHERE identifier = @identifier', {
+function SetLastName(identifier, lastName)
+	MySQL.Async.execute('UPDATE `users` SET `lastname` = @lastname WHERE identifier = @identifier', {
 		['@identifier']		= identifier,
-		['@firstname']		= data.firstname,
-		['@lastname']		= data.lastname,
-		['@dateofbirth']	= data.dateofbirth,
-		['@sex']			= data.sex,
-		['@height']			= data.height
-	}, function(rowsChanged)
-		if callback then
-			callback(true)
-		end
-	end)
+		['@lastname']		= lastName
+	})
 end
 
-function deleteIdentity(identifier, data, callback)
-	MySQL.Async.execute('UPDATE `users` SET `firstname` = @firstname, `lastname` = @lastname, `dateofbirth` = @dateofbirth, `sex` = @sex, `height` = @height WHERE identifier = @identifier', {
+function SetDOB(identifier, dob, callback)
+	MySQL.Async.execute('UPDATE `users` SET `dateofbirth` = @dateofbirth WHERE identifier = @identifier', {
 		['@identifier']		= identifier,
-		['@firstname']		= '',
-		['@lastname']		= '',
-		['@dateofbirth']	= '',
-		['@sex']			= '',
-		['@height']			= ''
-	}, function(rowsChanged)
-		if callback then
-			callback(true)
-		end
-	end)
+		['@dateofbirth']	= dob
+	})
 end
 
-RegisterServerEvent('esx_identity:setIdentity')
-AddEventHandler('esx_identity:setIdentity', function(data, myIdentifiers)
-	setIdentity(myIdentifiers.steamid, data, function(callback)
-		if callback then
-			TriggerClientEvent('esx_identity:identityCheck', myIdentifiers.playerid, true)
-			TriggerClientEvent('esx_identity:successfulSetIdentity', data)
+function SetSex(identifier, sexValue)
+	MySQL.Async.execute('UPDATE `users` SET `sex` = @sex WHERE identifier = @identifier', {
+		['@identifier']		= identifier,
+		['@sex']		    = sexValue
+	})
+end
+
+function SetHeight(identifier, height)
+	MySQL.Async.execute('UPDATE `users` SET `height` = @height WHERE identifier = @identifier', {
+		['@identifier']		= identifier,
+		['@height']		    = height
+	})
+end
+
+AddEventHandler('es:playerLoaded', function(source)
+	Wait(2000)
+
+	GetIdentity(source, function(data)
+		if data.firstname == '' or data.firstname == nil then
+            TriggerClientEvent('esx_identity:ShowFirstNameRegistration', source)
+        elseif data.lastname == '' or data.lastname == nil then
+			TriggerClientEvent('esx_identity:ShowLastNameRegistration', source) 
+		elseif data.dateofbirth == '' or data.dateofbirth == nil then
+			TriggerClientEvent('esx_identity:ShowDOBRegistration', source)     
+		elseif data.sex == '' or data.sex == nil then
+			TriggerClientEvent('esx_identity:ShowSexRegistration', source)
+		elseif data.height == '' or data.height == nil then
+			TriggerClientEvent('esx_identity:ShowHeightRegistration', source)
 		else
-			TriggerClientEvent('esx_identity:failedSetIdentity', data)
+			TriggerClientEvent('esx_identity:RegistrationSuccessful', source)                            
 		end
 	end)
 end)
 
-TriggerEvent('es:addCommand', 'register', function(source, args, user)
-	getIdentity(source, function(data)
-		if data.firstname ~= '' then
-			TriggerClientEvent('esx_identity:registrationBlocked', source, {})
-		else
-			TriggerClientEvent('esx_identity:showRegisterIdentity', source, {})
-		end
-	end)
-end, {help = "Register a new character"})
+RegisterServerEvent('esx_identity:SetFirstName')
+AddEventHandler('esx_identity:SetFirstName', function(ID, firstName)
+    local identifier = ESX.GetPlayerFromId(ID).identifier
 
-TriggerEvent('es:addGroupCommand', 'char', 'user', function(source, args, user)
-	getIdentity(source, function(result)
-		if result then
-			if result.firstname ~= '' then
-				identity = {
-					firstname = result.firstname,
-					lastname  = result.lastname
-				}
-				TriggerClientEvent('esx_identity:showIdentity', source, identity)
-			else
-				TriggerClientEvent('esx_identity:noIdentity', source, {})
-			end
-		else
-			TriggerClientEvent('esx_identity:noIdentity', source, {})
-		end
-	end)
-end, function(source, args, user)
-	TriggerClientEvent('chat:addMessage', source, { args = { '^1SYSTEM', 'Insufficient permissions!' } })
-end, {help = "Display Your Character Information"})
+    SetFirstName(identifier, firstName)
+end)
 
-TriggerEvent('es:addGroupCommand', 'chardel', 'user', function(source, args, user)
-	getIdentity(source, function(data)
-		if data.firstname ~= '' then
-			local data = {
-				identifier	= data.identifier,
-				firstname	= data.firstname,
-				lastname	= data.lastname,
-				dateofbirth	= data.dateofbirth,
-				sex			= data.sex,
-				height		= data.height
-			}
-			
-			deleteIdentity(GetPlayerIdentifiers(source)[1], data, function(callback)
-				if callback then
-					TriggerClientEvent('esx_identity:successfulDeleteIdentity', source, data)
-				else
-					TriggerClientEvent('esx_identity:failedDeleteIdentity', source, data)
-				end
-			end)
-		else
-			TriggerClientEvent('esx_identity:noIdentity', source, {})
-		end
-	end)
-end, function(source, args, user)
-	TriggerClientEvent('chat:addMessage', source, { args = { '^1SYSTEM', 'Insufficient permissions!' } })
-end, {help = "Delete Your Character"})
+RegisterServerEvent('esx_identity:SetLastName')
+AddEventHandler('esx_identity:SetLastName', function(ID, lastName)
+    local identifier = ESX.GetPlayerFromId(ID).identifier
 
-if Config.versionChecker then
-    PerformHttpRequest("https://raw.githubusercontent.com/ArkSeyonet/esx_identity/master/VERSION", function(err, rText, headers)
-		if rText then
-			if tonumber(rText) > tonumber(_VERSION) then
-				print("\n---------------------------------------------------")
-				print("ESX Identity has an update available!")
-				print("---------------------------------------------------")
-				print("Current : " .. _VERSION)
-				print("Latest  : " .. rText .. "\n")
-			end
-		else
-			print("\n---------------------------------------------------")
-			print("Unable to find the version.")
-			print("---------------------------------------------------\n")
-		end
-	end)
-end
+    SetLastName(identifier, lastName)
+end)
+
+RegisterServerEvent('esx_identity:SetDOB')
+AddEventHandler('esx_identity:SetDOB', function(ID, dob)
+    local identifier = ESX.GetPlayerFromId(ID).identifier
+
+    SetDOB(identifier, dob)
+end)
+
+RegisterServerEvent('esx_identity:SetSex')
+AddEventHandler('esx_identity:SetSex', function(ID, sexValue)
+    local identifier = ESX.GetPlayerFromId(ID).identifier
+
+    SetSex(identifier, sexValue)  
+end)
+
+RegisterServerEvent('esx_identity:SetHeight')
+AddEventHandler('esx_identity:SetHeight', function(ID, height)
+    local identifier = ESX.GetPlayerFromId(ID).identifier
+
+    SetHeight(identifier, height)
+end)

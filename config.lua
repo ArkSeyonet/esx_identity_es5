@@ -1,5 +1,2 @@
-Config = {
-	versionChecker = true
-}
-
-_VERSION           = 2.0
+Config                            = {}
+Config.Locale                     = 'en'

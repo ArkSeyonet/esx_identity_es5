@@ -1,7 +1,5 @@
 # esx_identity
 
-https://discord.gg/KpumbUk
-
 ## Requirements
 * Dependencies For Full Functionality
   * [esx_skin](https://github.com/ESX-Org/esx_skin)
