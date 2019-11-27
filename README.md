@@ -1,43 +1,45 @@
 # esx_identity
 
-## Requirements
-* Dependencies For Full Functionality
-  * [esx_skin](https://github.com/ESX-Org/esx_skin)
-  * [esx_policejob](https://github.com/ESX-Org/esx_policejob)
-  * [esx_society](https://github.com/ESX-Org/esx_society)
+### Requirements
+* [es_extended](https://github.com/ESX-Org/es_extended)
+* [My esx_skin](https://github.com/ArkSeyonet/esx_skin)
 
 ## Download & Installation
 
+### Using [fvm](https://github.com/qlaffont/fvm-installer)
+```
+fvm install --save --folder=esx ArkSeyonet/esx_identity
+```
+
+### Using Git
+```
+cd resources
+git clone https://github.com/ArkSeyonet/esx_identity.git [esx]/esx_identity
+```
+
+### Manually
+- Download https://github.com/ArkSeyonet/esx_identity/archive/master.zip
+- Put it in the `[esx]` directory
+
 ## Installation
-- Import `esx_identity.sql` in your database
+- Install my version of esx_skin
 - Add this to your `server.cfg`:
-- Note: the sql now only uses the users table
+
 ```
 start esx_identity
 ```
 
-- If you are using esx_policejob or esx_society, you need to enable the following in the scripts' `config.lua`:
-```Config.EnableESXIdentity          = true```
-
-### Commands
-```
-/register
-/char
-/chardel
-```
-
 ## Notes
 
-* This script is REQUIRED for the new ESX AIOMenu.
+* If you have any sources for esx_identity that date before this update was released, since this is an entirely new project re-coded from scratch, then you may use them following the licenses of the old script.
 
-* If you have any sources for esx_identity that date before this update was released, then you may use them following the licenses of the old script.
+# Legal
+### License
+esx_aiomenu - All-In-One Menu For ESX
 
-## Credits
+Copyright 2017-2019, David Miles, All rights reserved.
 
-* Special thanks to Cosharek For Help In The Creation Of The UI Design.
-* Special thanks to Alphakush and CMD.Telhada for help with initial testing.
-
-## Licensing
+* [Link To License](https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode)
 
 Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International Public License
 
@@ -47,4 +49,7 @@ Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International Publi
 
 * NoDerivatives — If you remix, transform, or build upon the material, you may not distribute the modified material. Merely changing the format never creates a derivative.
 
-Copyright 2017-2018, David Miles, All rights reserved.
+## Credits
+
+* Special thanks to Cosharek For Help In The Creation Of The UI Design.
+* Special thanks to Alphakush and CMD.Telhada for help with initial testing.
