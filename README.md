@@ -35,7 +35,7 @@ start esx_identity
 
 # Legal
 ### License
-esx_aiomenu - All-In-One Menu For ESX
+esx_identity - Re-Coded Character Creation For ESX
 
 Copyright 2017-2019, David Miles, All rights reserved.
 
