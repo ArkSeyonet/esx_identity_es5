@@ -4,6 +4,7 @@
 * [es_extended](https://github.com/ESX-Org/es_extended)
 * [My esx_skin](https://github.com/ArkSeyonet/esx_skin)
 * [My esx_voice](https://github.com/ArkSeyonet/esx_voice)
+* [My chat](https://github.com/ArkSeyonet/chat)
 
 ## Download & Installation
 
