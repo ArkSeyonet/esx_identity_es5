@@ -3,6 +3,7 @@
 ### Requirements
 * [es_extended](https://github.com/ESX-Org/es_extended)
 * [My esx_skin](https://github.com/ArkSeyonet/esx_skin)
+* [My esx_voice](https://github.com/ArkSeyonet/esx_voice)
 
 ## Download & Installation
 
@@ -23,6 +24,7 @@ git clone https://github.com/ArkSeyonet/esx_identity.git [esx]/esx_identity
 
 ## Installation
 - Install my version of esx_skin
+- Install my version of esx_voice
 - Add this to your `server.cfg`:
 
 ```
