@@ -11,6 +11,16 @@ local mute = true
 Citizen.CreateThread(function()
     Citizen.Wait(0)
     
+    while isRegistered == nil or isRegistered == false do
+        DisableAllControlActions(0)
+	Citizen.Wait(0)
+    end
+end)
+			
+
+Citizen.CreateThread(function()
+    Citizen.Wait(0)
+    
     while ESX == nil do
         TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
         Citizen.Wait(0)
