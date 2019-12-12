@@ -1,10 +1,39 @@
 ESX = nil
 
+TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+
 Citizen.CreateThread(function()
 	while ESX == nil do
 		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 		Citizen.Wait(0)
 	end
+end)
+
+ESX.RegisterServerCallback('esx_identity:getPosition', function(source, cb)
+
+	local xPlayer  = ESX.GetPlayerFromId(source)
+	local position
+	MySQL.Async.fetchAll('SELECT * FROM `users` WHERE `identifier` = @identifier', {
+		['@identifier'] = xPlayer.identifier
+	}, function(result)
+		if result then
+			if result[1].position ~= '' and result[1].position ~= nil then
+				position = json.decode(result[1].position)
+				if position.x ~= nil and position.y ~= nil and position.z ~= nil then
+					cb(position)
+				else
+					position = { x = -265.0, y = -963.6, z = 30.2 }
+					cb(position)
+				end
+			else
+				position = { x = -265.0, y = -963.6, z = 30.2 }
+				cb(position)
+			end
+		else
+			position = { x = -265.0, y = -963.6, z = 30.2 }
+			cb(position)
+		end
+	end)
 end)
 
 function GetIdentity(source, callback)

@@ -5,6 +5,8 @@ isPlayerLockedOut = false
 hudDisabled = false
 stopThread = false
 
+local positionSet = false
+local playerPosition
 local cloudOp = 0.02
 local mute = true
 
@@ -16,8 +18,14 @@ Citizen.CreateThread(function()
 	Citizen.Wait(0)
     end
 end)
-			
 
+Citizen.CreateThread(function()
+	while ESX == nil do
+		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+		Citizen.Wait(0)
+	end
+end)
+			
 Citizen.CreateThread(function()
     Citizen.Wait(0)
     
@@ -44,9 +52,9 @@ Citizen.CreateThread(function()
     end
     
     if isRegistered == true and stopThread == false then
-        TriggerLoadIn()
-        stopThread = true
-        hudDisabled = false
+            TriggerLoadIn()
+            stopThread = true
+            hudDisabled = false
     end
 end)
 
@@ -277,7 +285,20 @@ function TriggerLoadIn()
     local timer = GetGameTimer()
     
     ToggleSound(false)
-    TriggerEvent('esx_skin:playerRegistered') 
+    TriggerEvent('esx_skin:playerRegistered')
+
+    while positionSet == false do
+        if playerPosition ~= nil then
+            SetEntityCoords(PlayerPedId(), playerPosition.x, playerPosition.y, playerPosition.z)
+            positionSet = true
+        else
+            ESX.TriggerServerCallback('esx_identity:getPosition', function(position)
+                playerPosition = position
+            end)
+            Citizen.Wait(1000)
+        end
+    end
+
 
     while true do
         ClearScr()
