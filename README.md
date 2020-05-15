@@ -36,20 +36,15 @@ start esx_identity
 
 ### Commands
 ```
-/register
-/charlist
-/charselect
+/char
 /chardel
 ```
 
-# Legal
-### License
-esx_identity - rp characters
+## License
+* [Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International Public License](https://creativecommons.org/licenses/by-nc-nd/4.0/)
 
-Copyright (C) 2015-2020 Jérémie N'gadi
+Attribution — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
 
-This program Is free software: you can redistribute it And/Or modify it under the terms Of the GNU General Public License As published by the Free Software Foundation, either version 3 Of the License, Or (at your option) any later version.
+NonCommercial — You may not use the material for commercial purposes.
 
-This program Is distributed In the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty Of MERCHANTABILITY Or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License For more details.
-
-You should have received a copy Of the GNU General Public License along with this program. If Not, see http://www.gnu.org/licenses/.
+NoDerivatives — If you remix, transform, or build upon the material, you may not distribute the modified material.
