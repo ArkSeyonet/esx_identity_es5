@@ -4,7 +4,7 @@ game 'gta5'
 
 description 'ESX Identity'
 
-version '1.3.0'
+version '5.0'
 
 server_scripts {
 	'@es_extended/locale.lua',
