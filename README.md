@@ -1,58 +1,55 @@
 # esx_identity
 
-### Requirements
-* [es_extended](https://github.com/ESX-Org/es_extended)
-* [My esx_skin](https://github.com/ArkSeyonet/esx_skin)
-* [My esx_voice](https://github.com/ArkSeyonet/esx_voice)
-* [My chat](https://github.com/ArkSeyonet/chat)
+## Requirements
+* Dependencies For Full Functionality
+  * [esx_skin](https://github.com/ESX-Org/esx_skin)
+  * [esx_policejob](https://github.com/ESX-Org/esx_policejob)
+  * [esx_society](https://github.com/ESX-Org/esx_society)
 
 ## Download & Installation
 
 ### Using [fvm](https://github.com/qlaffont/fvm-installer)
 ```
-fvm install --save --folder=esx ArkSeyonet/esx_identity
+fvm install --save --folder=esx esx-org/esx_identity
 ```
 
 ### Using Git
 ```
 cd resources
-git clone https://github.com/ArkSeyonet/esx_identity.git [esx]/esx_identity
+git clone https://github.com/ESX-Org/esx_identity [esx]/esx_identity
 ```
 
 ### Manually
-- Download https://github.com/ArkSeyonet/esx_identity/archive/master.zip
+- Download https://github.com/ESX-Org/esx_identity/archive/master.zip
 - Put it in the `[esx]` directory
 
 ## Installation
-- Install my version of esx_skin
-- Install my version of esx_voice
+- Import `esx_identity.sql` in your database
 - Add this to your `server.cfg`:
 
 ```
 start esx_identity
 ```
 
-## Notes
+- If you are using esx_policejob or esx_society, you need to enable the following in the scripts' `config.lua`:
+```Config.EnableESXIdentity          = true```
 
-* If you have any sources for esx_identity that date before this update was released, since this is an entirely new project re-coded from scratch, then you may use them following the licenses of the old script.
+### Commands
+```
+/register
+/charlist
+/charselect
+/chardel
+```
 
 # Legal
 ### License
-esx_identity - Re-Coded Character Creation For ESX
+esx_identity - rp characters
 
-Copyright 2017-2019, David Miles, All rights reserved.
+Copyright (C) 2015-2020 Jérémie N'gadi
 
-* [Link To License](https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode)
+This program Is free software: you can redistribute it And/Or modify it under the terms Of the GNU General Public License As published by the Free Software Foundation, either version 3 Of the License, Or (at your option) any later version.
 
-Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International Public License
+This program Is distributed In the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty Of MERCHANTABILITY Or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License For more details.
 
-* Attribution — You must give appropriate credit. If supplied, you must provide the name of the creator and attribution parties, a copyright notice, a license notice, a disclaimer notice, and a link to the material. CC licenses prior to Version 4.0 also require you to provide the title of the material if supplied, and may have other slight differences.
-
-* NonCommercial — You may not use the material for commercial purposes. A commercial use is one primarily intended for commercial advantage or monetary compensation.
-
-* NoDerivatives — If you remix, transform, or build upon the material, you may not distribute the modified material. Merely changing the format never creates a derivative.
-
-## Credits
-
-* Special thanks to Cosharek For Help In The Creation Of The UI Design.
-* Special thanks to Alphakush and CMD.Telhada for help with initial testing.
+You should have received a copy Of the GNU General Public License along with this program. If Not, see http://www.gnu.org/licenses/.
