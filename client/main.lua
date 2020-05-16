@@ -1,20 +1,34 @@
+ESX = nil
+local loadingScreenFinished = false
+
+Citizen.CreateThread(function()
+	while ESX == nil do
+		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+		Citizen.Wait(0)
+	end
+end)
+
+RegisterNetEvent('esx_identity:alreadyRegistered')
+AddEventHandler('esx_identity:alreadyRegistered', function()
+	while not loadingScreenFinished do
+		Citizen.Wait(100)
+	end
+
+	TriggerEvent('esx_skin:playerRegistered')
+end)
+
+AddEventHandler('esx:loadingScreenOff', function()
+	loadingScreenFinished = true
+end)
+
 if not Config.UseDeferrals then
 	local guiEnabled, isDead = false, false
-
-	ESX = nil
-
-	Citizen.CreateThread(function()
-		while ESX == nil do
-			TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-			Citizen.Wait(0)
-		end
-	end)
 
 	AddEventHandler('esx:onPlayerDeath', function(data)
 		isDead = true
 	end)
 
-	AddEventHandler('playerSpawned', function(spawn)
+	AddEventHandler('esx:onPlayerSpawn', function(spawn)
 		isDead = false
 	end)
 
@@ -30,6 +44,8 @@ if not Config.UseDeferrals then
 
 	RegisterNetEvent('esx_identity:showRegisterIdentity')
 	AddEventHandler('esx_identity:showRegisterIdentity', function()
+		TriggerEvent('esx_skin:resetFirstSpawn')
+
 		if not isDead then
 			EnableGui(true)
 		end
@@ -40,6 +56,7 @@ if not Config.UseDeferrals then
 			if callback then
 				ESX.ShowNotification(_U('thank_you_for_registering'))
 				EnableGui(false)
+				TriggerEvent('esx_skin:playerRegistered')
 			else
 				ESX.ShowNotification(_U('registration_error'))
 			end
